@@ -3,8 +3,7 @@ import random
 from faker import Faker
 import pandas as pd
 from datetime import datetime, timedelta
-from azure.identity import DefaultAzureCredential
-from azure.storage.blob import BlobServiceClient, ContainerClient, BlobBlock, BlobClient, StandardBlobTier
+from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 import os
 from pathlib import Path
