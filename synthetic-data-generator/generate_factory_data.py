@@ -3,14 +3,19 @@ import random
 from faker import Faker
 import pandas as pd
 from datetime import datetime, timedelta
-from azure.storage.blob import BlobServiceClient
 from dotenv import load_dotenv
 import os
 from pathlib import Path
+from azure.storage.blob import BlobServiceClient
+from azure.identity import ClientSecretCredential
+
 
 load_dotenv()
 
-CONNECTION_STRING = os.environ["AZURE_STORAGE_CONNECTION_STIRNG"]
+ACCOUNT_URL = os.environ["AZURE_STORAGE_ACCOUNT_URL"]
+TENANT_ID = os.environ["AZURE_TENANT_ID"]
+CLIENT_ID = os.environ["AZURE_CLIENT_ID"]
+CLIENT_SECRET = os.environ["AZURE_CLIENT_SECRET"]
 CONTAINER = "bronze"
 
 fake = Faker()
@@ -33,7 +38,12 @@ machine_types = [
 plants = ['Plant-A','Plant-B','Plant-C']
 
 def upload_to_blob(file_path: Path):
-   client = BlobServiceClient.from_connection_string(CONNECTION_STRING)
+   credential = ClientSecretCredential(
+        tenant_id=TENANT_ID,
+        client_id=CLIENT_ID,
+        client_secret=CLIENT_SECRET,
+    )
+   client = BlobServiceClient(account_url=ACCOUNT_URL, credential=credential)
    blob_client = client.get_blob_client(
       container=CONTAINER,
       blob=file_path.name
